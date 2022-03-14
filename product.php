@@ -7,7 +7,8 @@
   if(isset($_POST['addProduct'])){
     $name=$_POST['prodName'];
     $desc=$_POST['prodDesc'];
-    $crudObj->createRecord("product", "ID, prodName, prodDesc", "NULL, '$name','$desc'");
+    $prodCate=$_POST['prodCate'];
+    $crudObj->createRecord("product", "ID, prodName, prodDesc, prodCate", "NULL, '$name','$desc', '$prodCate'");
     if ($crudObj) {
       $msg = 'Inserted successfully.';
     }
@@ -18,21 +19,12 @@
     $id=$_POST['prodId'];
     $name=$_POST['prodName'];
     $desc=$_POST['prodDesc'];
+    $prodCate=$_POST['prodCate'];
 
-    $productObj->edit("prodName='$name', prodDesc='$desc'", "ID = '$id'");
-    if ($productObj) {
-      $msg = 'Updated successfully.';
-    }
-    else
-      $msg = 'Something went wrong. Please try again';
+    $crudObj->updateRecord("product", "prodName = '$name', prodDesc = '$desc', prodCate = '$prodCate'", "ID", $id);
   }
   if(isset($_POST['deleteProduct'])){
-    $productObj->delete($_POST['prodId']);
-    if ($productObj) {
-      $msg = 'Deleted successfully.';
-    }
-    else
-      $msg = 'Something went wrong. Please try again';
+    $crudObj->deleteRecord("product", 'ID', $_POST['prodId']);
   }
 ?>
 <!DOCTYPE html>
@@ -321,8 +313,7 @@
                       padding:0;
                       margin:0;
                     }
-                  </style>
-
+                </style>
                 <div id="login" class="modal mymodal">
                   <div class="modal-content center" style="padding: 24px">
                   <h5 class="modal-close"><i class="material-icons text-success">&#10005;</i></h5>
@@ -333,14 +324,16 @@
                         <input type="text" name="prodName" class="form-control">
                       </div>
                       <div>
-                        <div class="input-field col s12">
-                          <select>
+                        <div class="input-field col s12 mb-2">
+                          <select name="prodCate" class="form-control" style="border: 2px solid #ccc; padding-left: 15px;" >
                             <option value="" disabled selected>Choose your option</option>
-                            <option value="1">Option 1</option>
-                            <option value="2">Option 2</option>
-                            <option value="3">Option 3</option>
+                            <?php
+                              $prodCate=$crudObj->readAllData("category");
+                              foreach( $prodCate as $pro ){
+                              ?>
+                            <option value="<?=$pro['ID']?>"><?=$pro['cateName']?></option>
+                            <?php }?>
                           </select>
-                          <label>Materialize Select</label>
                         </div>
                       </div>
                       <div class="input-group input-group-outline mb-3">
@@ -375,18 +368,13 @@
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CreatedAt</th>
                       <th class="text-secondary opacity-7"></th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php 
-                        // if(isset($_POST['searchProduct'])){
-                        //   $key=$_POST['searchInput'];
-                        //   $ret=mysqli_query($con,"select * from product where prodName like '%".$key."%' or prodDesc like '%".$key."%' ");
-                        //   $cnt=1;
-                        //   $row=mysqli_num_rows($ret);
-                        // }else{
                           $cnt=1;
                           $products =  $crudObj->readAllData("product");
                           foreach ($products as $product){
@@ -406,6 +394,13 @@
                             <td>
                               <p class="text-xs text-secondary mb-0"><?php echo $product['prodDesc'];?></p>
                             </td>
+                            <td>
+                            <?php
+                              $cateId=$product['prodCate'];
+                              $prodCate=$crudObj->getRecordById("category", "cateName", "ID", $cateId);
+                              ?>
+                              <?php echo $prodCate ?>
+                            </td>
                             <td class="align-middle text-center">
                               <span class="text-secondary text-xs font-weight-bold"><?php echo $product['CreationDate'];?></span>
                             </td>
@@ -415,6 +410,7 @@
                                 data-id="<?php echo htmlentities ($product['ID']);?>"
                                 data-name="<?php echo $product['prodName'];?>"
                                 data-desc="<?php echo $product['prodDesc'];?>"
+                                data-cate="<?php echo $product['prodCate'];?>"
                               >
                               <i class="material-icons">&#xE254;</i></a>
                               <a href="#prodDelete" class="teal modal-trigger deleteBTN" title="Delete" data-toggle="tooltip"
@@ -442,6 +438,17 @@
                       <div class="input-group input-group-outline mb-3">
                         <label class="form-label"></label>
                         <input type="text" name="prodName" class="form-control" id="prodName-edit">
+                      </div>
+                      <div class="input-group input-group-outline mb-3">
+                        <select name="prodCate" id="prodCate-edit" class="form-control" style="border: 2px solid #ccc; padding-left: 15px;" >
+                          <option value="" disabled selected></option>
+                          <?php
+                            $prodCate=$crudObj->readAllData("category");
+                            foreach( $prodCate as $pro ){
+                            ?>
+                          <option value="<?=$pro['ID']?>"><?=$pro['cateName']?></option>
+                          <?php }?>
+                        </select>
                       </div>
                       <div class="input-group input-group-outline mb-3">
                         <label class="form-label"></label>
@@ -608,6 +615,7 @@
           $('#prodId-edit').val($(this).attr('data-id'));
           $('#prodName-edit').val($(this).attr('data-name'));
           $('#prodDesc-edit').val($(this).attr('data-desc'));  
+          $('#prodCate-edit').val($(this).attr('data-cate'));  
         }); 
         $(".deleteBTN").on('click', function(e){
           e.preventDefault(e);

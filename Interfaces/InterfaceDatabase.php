@@ -7,7 +7,6 @@ interface DatabaseConnect{
     public function update($table , $data , $colum, $id , $other);
     public function delete($table , $colum , $id , $other);
     public function insert($table , $colum , $value);
-    public function lastId();
     public function fetch();
 }
 

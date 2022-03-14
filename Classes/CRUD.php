@@ -24,6 +24,15 @@
             else
                 echo "No found records";
 		}
+        public function getRecordById($table, $targetColum, $colum, $id){
+            $this->getById($table, $targetColum, $colum, $id);
+            if($this->execute() and $this->rowCount() > 0){
+                $catName = $this->fetch();
+                return $catName[$targetColum];
+            }
+            else
+                echo "No found records";
+        }
         public function deleteRecord($table , $colum , $id){
 		    $this->delete($table , $colum , $id);
             if ($this->execute() > 0) {

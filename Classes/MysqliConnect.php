@@ -32,9 +32,6 @@ class MysqliConnect {
     public function rowCount() {
         return mysqli_num_rows($this->stmt);
     }
-    public function lastId() {
-            return mysqli_insert_id($this->conn);
-    }
 
     public function insert($table , $colum , $value) {
         $this->stmt = mysqli_query($this->conn(), "INSERT INTO `{$table}` ({$colum}) VALUES ({$value})");
@@ -45,12 +42,7 @@ class MysqliConnect {
     public function delete($table , $colum , $id , $other = null) {
         $this->stmt = mysqli_query($this->conn(), "DELETE FROM `{$table}` WHERE `{$colum}` = '{$id}' {$other}");
     }
-    
-    public function html($string){
-        return strip_tags($string);
-    }
-    
-    public function esc($string){
-        return mysqli_real_escape_string($this->conn() , $string);
+    public function getById($table, $targetColum, $colum, $id, $other = null){
+        $this->stmt = mysqli_query($this->conn(), "SELECT {$targetColum} FROM `{$table}` WHERE `{$colum}` = '{$id}' {$other}");
     }
 }
