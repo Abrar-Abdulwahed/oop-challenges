@@ -7,14 +7,3 @@ spl_autoload_register(function($name){
     require_once __DIR__."/../Classes/{$name}.php";
 });
 
-
-if(!isset($_GET['page']))
-    $page = 1;
-else 
-    $page = (int)$_GET['page'];
-
-
-$category = new Category();
-
-
-$start_from = ($page-1) * PERPAGE;
