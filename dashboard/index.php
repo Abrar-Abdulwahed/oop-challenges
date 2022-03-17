@@ -3,8 +3,14 @@ require_once '../App/inti.php';
 
 if(isset($_POST['perform-deposite'])){
 	$id = $_POST['uid'];
-	$deposite = $_POST['deposite'];
-	$user->updateBalance($deposite, $id);
+	$amount = $_POST['amount-deposite'];
+	$user->updateBalanceDeposite($amount, $id);
+	die(header("Location: index.php"));
+}
+if(isset($_POST['perform-withdraw'])){
+	$id = $_POST['uid'];
+	$amount = $_POST['amount-withdraw'];
+	$user->updateBalanceWithdraw($amount, $id);
 	die(header("Location: index.php"));
 }
 ?>
@@ -36,12 +42,7 @@ if(isset($_POST['perform-deposite'])){
 	        <div class="container-fluid py-2">
 		        <div class="app-header-content"> 
 		            <div class="row justify-content-between align-items-center">
-
-
-		            
 		            <div class="app-utilities col-auto">
-
-
 			            <div class="app-utility-item app-user-dropdown dropdown">
 				            <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="assets/images/user.png" alt="user profile"></a>
 				            <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
@@ -120,8 +121,15 @@ if(isset($_POST['perform-deposite'])){
 						    <div class="app-card-footer p-4 mt-auto">
 								<form method="POST" action="<?php $_SERVER['PHP_SELF'] ?>">
 									<input type="hidden" name="uid" value="<?php echo $_SESSION['wallet']['uid'] ?>">
-									<input type="text" name="deposite" required>
+									<input type="text" name="amount-deposite" required>
 									<input type="submit" value="Deposite" name="perform-deposite">
+								</form>
+						    </div><!--//app-card-footer-->
+							<div class="app-card-footer p-4 mt-auto">
+								<form method="POST" action="<?php $_SERVER['PHP_SELF'] ?>">
+									<input type="hidden" name="uid" value="<?php echo $_SESSION['wallet']['uid'] ?>">
+									<input type="text" name="amount-withdraw" required>
+									<input type="submit" value="Withdraw" name="perform-withdraw">
 								</form>
 						    </div><!--//app-card-footer-->
 						</div><!--//app-card-->

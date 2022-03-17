@@ -33,8 +33,6 @@
                         if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['register'])){
                             $user->setInputForRegister($_POST['firstname'] , $_POST['lastname'] , $_POST['uid'],  $_POST['email'] , $_POST['password1'] , $_POST['password2']);
                             $user->DisplayMsgInRegister();
-                            
-                            
                         }
                         ?>
                         </div>

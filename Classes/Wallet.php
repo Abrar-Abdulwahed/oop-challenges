@@ -28,22 +28,33 @@ class Wallet extends MysqliConnect{
             ];
         }
     }
-    public function getBalance($other){
-        $this->query("wallets", "balance", $other);
-        return $this->execute();
+    public function getBalance($id){
+        $this->query("balance" ,"wallets", "WHERE `uid` = '$id'"); 
+        $this->execute();
+        return $this->fetch();
     }
 
 
-    public function deposite($deposite, $id)
+    public function deposite($amount, $id)
     {
-        print_r('777777777777777777777777777777777777777777777777777777');
-        // $this->query("balance" ,"wallet", "WHERE `uid` = '$id'"); 
-        echo '888888888888888888888888888888888888888888888888888888';
-        // print_r($this->execute());
-        echo '999999999999999999999999999999999999999999999999999999';
-        $totalBalance;
-        $this->update("wallets" ,"balance = '$deposite'", "uid", $id);
+        $currentBalance = $this->getBalance($id);
+        $totalBalance = floatval($currentBalance['balance']) + floatval($amount);
+        $this->update("wallets" ,"balance = '$totalBalance'", "uid", $id);
         $this->execute();
+    }
+
+    public function withdraw($amount, $id)
+    {
+        $currentBalance = $this->getBalance($id);
+        if((floatval($currentBalance['balance']) - floatval($amount)) > 0.0 ){
+            $totalBalance = floatval($currentBalance['balance']) - floatval($amount);
+            $this->update("wallets" ,"balance = '$totalBalance'", "uid", $id);
+            $this->execute();
+        }
+        else{
+            Messages::setMsg('Error: ', 'Your Balance is not enough!', 'danger');
+            echo Messages::getMsg();
+        }
     }
 
 }

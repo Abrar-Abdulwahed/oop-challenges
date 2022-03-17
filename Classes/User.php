@@ -159,8 +159,12 @@ class User extends MysqliConnect{
         return null;
     }
 
-    public function updateBalance($deposite, $id){
+    public function updateBalanceDeposite($deposite, $id){
         $this->wallet->deposite($deposite, $id);
+        
+    }
+    public function updateBalanceWithdraw($withdraw, $id){
+        $this->wallet->withdraw($withdraw, $id);
     }
     
 }

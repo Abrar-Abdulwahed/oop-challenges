@@ -16,27 +16,32 @@ if(isset($_GET['logout']) and $_GET['logout'] == TRUE){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $user = new User();
 $user->wallet = new Wallet();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if(isset($_SESSION['wallet'])){
     $userId = $_SESSION['user']['uid'];
     $conn = mysqli_connect("localhost", "root" , "" , "ewallet");
